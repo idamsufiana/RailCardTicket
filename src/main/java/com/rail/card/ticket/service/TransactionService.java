@@ -35,11 +35,12 @@ public class TransactionService {
         Wallet wallet = walletRepository.findByEmail(email);
         return wallet.getBalance();
     }
-    public void topup(String email, Double amount) throws TicketException {
+    public Wallet topup(String email, Double amount) throws TicketException {
         Wallet wallet = walletRepository.findByEmail(email);
         validateAmount(wallet, amount);
         wallet.setBalance(wallet.getBalance()+amount);
         walletRepository.save(wallet);
+        return wallet;
     }
 
     @Transactional

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.rail.card.ticket.utils.TokenMapper.getEmail;
+
 @RestController
 @RequestMapping("/v1/Transaction")
 public class TransactionController {
@@ -14,23 +16,18 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<?> getbalance(@RequestHeader("Autorization") String authorization){
-        String email = "";
-        transactionService.balance(email);
-        return ResponseEntity.ok("");
+    public ResponseEntity<?> getbalance(@RequestHeader("Autorization") String authorization) throws TicketException {
+        return ResponseEntity.ok(transactionService.balance(getEmail(authorization)));
     }
 
     @PostMapping
     public ResponseEntity<?> topUp(@RequestHeader("Autorization") String authorization, @RequestBody Double amount) throws TicketException {
-        String email = "";
-        transactionService.topup(email, amount);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(transactionService.topup(getEmail(authorization), amount));
     }
 
     @PostMapping
     public ResponseEntity<?> transaction(@RequestHeader("Autorization") String authorization, @RequestBody String serviceCode) throws TicketException {
-        transactionService.transaction(authorization, serviceCode);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(transactionService.transaction(authorization, serviceCode));
     }
 
 }
