@@ -2,4 +2,5 @@
 Rail card Ticket
 
 
-alt text](https://github.com/idamsufiana/RailCardTicket/rail.jpg?raw=true)
+
+<img align="left" alt="GIF" src="https://github.com/idamsufiana/RailCardTicket/rail.jpg?raw=true" />
