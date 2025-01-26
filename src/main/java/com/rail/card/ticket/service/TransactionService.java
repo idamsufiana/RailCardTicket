@@ -2,6 +2,7 @@ package com.rail.card.ticket.service;
 
 import com.rail.card.ticket.config.GeneratorSequence;
 import com.rail.card.ticket.dto.ResponseTransaction;
+import com.rail.card.ticket.dto.TransactionDto;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.model.ServicePayment;
 import com.rail.card.ticket.model.Transaction;
@@ -12,6 +13,7 @@ import com.rail.card.ticket.repository.TransactionRepository;
 import com.rail.card.ticket.repository.WalletRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -51,6 +53,11 @@ public class TransactionService {
             validateAmount(wallet, amount);
             wallet.setBalance(wallet.getBalance()+amount);
             walletRepository.save(wallet);
+            TransactionDto dto = new TransactionDto();
+            dto.setAmount(amount);
+            dto.setTransactionType("TOPUP");
+            dto.setWallet(wallet);
+            saveToTransaction(dto);
         }catch (Exception e){
             throw new TicketException(e.getMessage());
         }
@@ -73,6 +80,11 @@ public class TransactionService {
             responseTransaction.setServiceCode(servicePayment.getServiceCode());
             responseTransaction.setServiceName(servicePayment.getServiceName());
             responseTransaction.setInvoiceCode(setRequestId());
+
+            TransactionDto dto = new TransactionDto();
+            dto.setAmount(servicePayment.getAmount());
+            dto.setWallet(wallet);
+            saveToTransaction(dto);
         }catch (Exception e){
             throw new TicketException(e.getMessage());
         }
@@ -101,5 +113,13 @@ public class TransactionService {
         if(wallet.getBalance() < amount){
             throw new TicketException("Insufficient Fund");
         }
+    }
+
+    public void saveToTransaction(TransactionDto dto) throws TicketException {
+      Transaction transaction = new Transaction();
+      transaction.setAmount(dto.getAmount());
+      if(!transaction.getTransactionType().equals("TOPUP")){
+          transaction.setTransactionType("PAYMENT");
+      }
     }
 }

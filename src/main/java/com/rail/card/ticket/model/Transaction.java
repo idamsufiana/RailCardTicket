@@ -14,7 +14,6 @@ public class Transaction extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long transactionId;
-    private String serviceCode;
     private String transactionType;
     private Double amount;
     @ManyToOne
