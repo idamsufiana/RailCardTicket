@@ -55,11 +55,7 @@ public class AuthService {
         BeanUtils.copyProperties(registerRequest, entity);
         Set<Role> roles = new HashSet<>();
         Optional<Role> role = Optional.empty();
-        if(registerRequest.getRole().equals("Admin")){
-            role = roleRepository.findByRole(ApplicationEnum.Group.ROLE_ADMIN);
-        } else if (registerRequest.getRole().equals("User")) {
-            role = roleRepository.findByRole(ApplicationEnum.Group.ROLE_USER);
-        }
+        role = roleRepository.findByRole(ApplicationEnum.Group.ROLE_ADMIN);
         roles.add(role.get());
         entity.setRoles(roles);
         return entity;
