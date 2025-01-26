@@ -35,33 +35,47 @@ public class TransactionService {
     @Autowired
     GeneratorSequence generatorSequence;
 
-    public Double balance(String email){
-        Wallet wallet = walletRepository.findByEmail(email);
+    public Double balance(String email) throws TicketException {
+        Wallet wallet = new Wallet();
+        try{
+            wallet = walletRepository.findByEmail(email);
+        }catch (Exception e){
+            throw new TicketException(e.getMessage());
+        }
         return wallet.getBalance();
     }
     public Wallet topup(String email, Double amount) throws TicketException {
-        Wallet wallet = walletRepository.findByEmail(email);
-        validateAmount(wallet, amount);
-        wallet.setBalance(wallet.getBalance()+amount);
-        walletRepository.save(wallet);
+        Wallet wallet = new Wallet();
+        try{
+            wallet = walletRepository.findByEmail(email);
+            validateAmount(wallet, amount);
+            wallet.setBalance(wallet.getBalance()+amount);
+            walletRepository.save(wallet);
+        }catch (Exception e){
+            throw new TicketException(e.getMessage());
+        }
         return wallet;
     }
 
     @Transactional
     public ResponseTransaction transaction(String Autorization, String serviceCode) throws TicketException {
         ResponseTransaction responseTransaction = new ResponseTransaction();
-        validate(Autorization, serviceCode);
-        // get Amount
-        ServicePayment servicePayment = serviceRepository.findFirstByServiceCode(serviceCode);
-        String email = getEmail(Autorization);
-        Wallet wallet = walletRepository.findByEmail(email);
-        validateAmount(wallet, servicePayment.getAmount());
-        wallet.setBalance(wallet.getBalance() - servicePayment.getAmount());
-        walletRepository.save(wallet);
-        responseTransaction.setAmount(servicePayment.getAmount());
-        responseTransaction.setServiceCode(servicePayment.getServiceCode());
-        responseTransaction.setServiceName(servicePayment.getServiceName());
-        responseTransaction.setInvoiceCode(setRequestId());
+        try{
+            validate(Autorization, serviceCode);
+            // get Amount
+            ServicePayment servicePayment = serviceRepository.findFirstByServiceCode(serviceCode);
+            String email = getEmail(Autorization);
+            Wallet wallet = walletRepository.findByEmail(email);
+            validateAmount(wallet, servicePayment.getAmount());
+            wallet.setBalance(wallet.getBalance() - servicePayment.getAmount());
+            walletRepository.save(wallet);
+            responseTransaction.setAmount(servicePayment.getAmount());
+            responseTransaction.setServiceCode(servicePayment.getServiceCode());
+            responseTransaction.setServiceName(servicePayment.getServiceName());
+            responseTransaction.setInvoiceCode(setRequestId());
+        }catch (Exception e){
+            throw new TicketException(e.getMessage());
+        }
         return responseTransaction;
     }
 
