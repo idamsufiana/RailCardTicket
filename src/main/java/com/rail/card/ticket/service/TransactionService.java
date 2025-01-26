@@ -125,8 +125,6 @@ public class TransactionService {
     public void saveToTransaction(TransactionDto dto) throws TicketException {
       Transaction transaction = new Transaction();
       transaction.setAmount(dto.getAmount());
-      if(!transaction.getTransactionType().equals("TOPUP")){
-          transaction.setTransactionType("PAYMENT");
-      }
+      transaction.setTransactionType(dto.getTransactionType());
     }
 }
