@@ -1,6 +1,7 @@
 package com.rail.card.ticket.service;
 
 import com.rail.card.ticket.config.GeneratorSequence;
+import com.rail.card.ticket.dto.HistoryDto;
 import com.rail.card.ticket.dto.ResponseTransaction;
 import com.rail.card.ticket.dto.TransactionDto;
 import com.rail.card.ticket.exception.TicketException;
@@ -13,6 +14,9 @@ import com.rail.card.ticket.repository.TransactionRepository;
 import com.rail.card.ticket.repository.WalletRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -95,8 +99,10 @@ public class TransactionService {
         return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
     }
 
-    public List<Transaction> history(LocalDate dateFrom , LocalDate dateTo){
-        return transactionRepository.findAll();
+    public Page<Transaction> findAllAsDto(String Autorization, HistoryDto date, Pageable pageable)  {
+        expToken(Autorization);
+        List<Transaction> list = transactionRepository.findByDateRange(date.getDateFrom(), date.getDateTo());
+        return new PageImpl<>(list, pageable, list.size());
     }
 
     public void validate(String Autorization, String serviceCode) throws TicketException {
