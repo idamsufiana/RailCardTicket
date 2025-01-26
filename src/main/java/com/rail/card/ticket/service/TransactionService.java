@@ -89,6 +89,7 @@ public class TransactionService {
             TransactionDto dto = new TransactionDto();
             dto.setAmount(servicePayment.getAmount());
             dto.setWallet(wallet);
+            dto.setTransactionType("PAYMENT");
             saveToTransaction(dto);
         }catch (Exception e){
             throw new TicketException(e.getMessage());
