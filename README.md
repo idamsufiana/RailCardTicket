@@ -3,4 +3,4 @@ Rail card Ticket
 
 
 
-<img align="left" alt="GIF" src="https://github.com/idamsufiana/RailCardTicket/rail.jpg?raw=true" />
+<img align="left" alt="GIF" src="https://github.com/idamsufiana/RailCardTicket/blob/main/rail.jpg?raw=true" />
