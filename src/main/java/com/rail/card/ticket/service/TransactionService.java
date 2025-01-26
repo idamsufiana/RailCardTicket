@@ -1,13 +1,12 @@
 package com.rail.card.ticket.service;
 
 import com.rail.card.ticket.config.GeneratorSequence;
-import com.rail.card.ticket.dto.HistoryDto;
-import com.rail.card.ticket.dto.ResponseTransaction;
-import com.rail.card.ticket.dto.TransactionDto;
+import com.rail.card.ticket.model.dto.HistoryDto;
+import com.rail.card.ticket.model.dto.ResponseTransaction;
+import com.rail.card.ticket.model.dto.TransactionDto;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.model.ServicePayment;
 import com.rail.card.ticket.model.Transaction;
-import com.rail.card.ticket.model.User;
 import com.rail.card.ticket.model.Wallet;
 import com.rail.card.ticket.repository.ServiceRepository;
 import com.rail.card.ticket.repository.TransactionRepository;
@@ -17,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.rail.card.ticket.utils.TokenMapper.expToken;

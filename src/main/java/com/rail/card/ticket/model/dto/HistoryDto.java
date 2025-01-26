@@ -1,4 +1,4 @@
-package com.rail.card.ticket.dto;
+package com.rail.card.ticket.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;

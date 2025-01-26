@@ -1,9 +1,9 @@
 package com.rail.card.ticket.controller;
 
 import com.rail.card.ticket.config.JwtUtils;
-import com.rail.card.ticket.dto.LoginRequest;
-import com.rail.card.ticket.dto.LoginResponse;
-import com.rail.card.ticket.dto.RegisterRequest;
+import com.rail.card.ticket.model.dto.LoginRequest;
+import com.rail.card.ticket.model.dto.LoginResponse;
+import com.rail.card.ticket.model.dto.RegisterRequest;
 import com.rail.card.ticket.model.User;
 import com.rail.card.ticket.service.AuthService;
 import jakarta.validation.Valid;

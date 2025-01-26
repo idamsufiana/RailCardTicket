@@ -21,7 +21,7 @@ import java.util.HashMap;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "appEntityManagerFactory",
         transactionManagerRef = "appTransactionManager",
-        basePackages = {"com.rail.card"})
+        basePackages = {"com.rail.card.ticket"})
 public class JpaConfig {
 
     @Autowired
@@ -39,7 +39,7 @@ public class JpaConfig {
 
         return builder
                 .dataSource(dataSource)
-                .packages("com.rail.card")
+                .packages("com.rail.card.ticket")
                 .persistenceUnit("app")
                 .properties(properties).build();
     }

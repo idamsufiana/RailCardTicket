@@ -1,16 +1,12 @@
 package com.rail.card.ticket.controller;
 
-import com.rail.card.ticket.dto.HistoryDto;
+import com.rail.card.ticket.model.dto.HistoryDto;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.service.TransactionService;
-import com.sun.net.httpserver.Authenticator;
-import org.hibernate.query.sqm.spi.BaseSemanticQueryWalker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 import static com.rail.card.ticket.utils.TokenMapper.getEmail;
 
