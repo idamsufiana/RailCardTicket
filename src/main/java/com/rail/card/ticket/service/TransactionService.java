@@ -50,6 +50,7 @@ public class TransactionService {
         }
         return wallet.getBalance();
     }
+
     public Wallet topup(String email, Double amount) throws TicketException {
         Wallet wallet = new Wallet();
         try{
@@ -99,7 +100,7 @@ public class TransactionService {
         return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
     }
 
-    public Page<Transaction> findAllAsDto(String Autorization, HistoryDto date, Pageable pageable)  {
+    public Page<Transaction> findAllAsDto(String Autorization, HistoryDto date, Pageable pageable) throws TicketException {
         expToken(Autorization);
         List<Transaction> list = transactionRepository.findByDateRange(date.getDateFrom(), date.getDateTo());
         return new PageImpl<>(list, pageable, list.size());

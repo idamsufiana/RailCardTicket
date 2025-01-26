@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
-    @Query("select r from RenewalBakRenewal r where r.spk.provider = ?1 and r.processInstanceId in ?2")
+    @Query("select r from Wallet r where r.user.email = ?1 ")
     Wallet findByEmail(String email);
 
 

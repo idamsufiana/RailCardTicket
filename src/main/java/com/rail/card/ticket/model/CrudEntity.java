@@ -18,5 +18,4 @@ public abstract class CrudEntity implements Serializable {
     protected Date updatedDate;
     protected String createdBy;
     protected String updatedBy;
-
 }
