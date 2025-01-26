@@ -14,11 +14,7 @@ public class TokenMapper {
 
     public static Date expToken (String token) throws TicketException {
         String expired = "Token expired";
-        String[] splitString = token.split("\\.");
-        String base64EncodedBody = splitString[1];
-        Base64 base64Url = new Base64(true);
-        String body = new String(base64Url.decode(base64EncodedBody));
-        Map<String, String> bodyToken = new Gson().fromJson(body, Map.class);
+        Map<String, String> bodyToken = getBodyToken(token);
         DecimalFormat format = new DecimalFormat("###");
         format.setMinimumIntegerDigits(0);
         format.setMaximumFractionDigits(2000);
@@ -31,14 +27,18 @@ public class TokenMapper {
     }
 
     public static String getEmail (String token) throws TicketException {
-        String expired = "Token expired";
+        Map<String, String> bodyToken = getBodyToken(token);
+        String email = bodyToken.get("email");
+        return email;
+    }
+
+    public static Map<String, String> getBodyToken(String token){
         String[] splitString = token.split("\\.");
         String base64EncodedBody = splitString[1];
         Base64 base64Url = new Base64(true);
         String body = new String(base64Url.decode(base64EncodedBody));
         Map<String, String> bodyToken = new Gson().fromJson(body, Map.class);
-        String email = bodyToken.get("email");
-        return email;
+        return bodyToken;
     }
 
 }
