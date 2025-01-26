@@ -1,5 +1,6 @@
 package com.rail.card.ticket.service;
 
+import com.rail.card.ticket.config.GeneratorSequence;
 import com.rail.card.ticket.dto.ResponseTransaction;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.model.ServicePayment;
@@ -31,6 +32,9 @@ public class TransactionService {
     @Autowired
     WalletRepository walletRepository;
 
+    @Autowired
+    GeneratorSequence generatorSequence;
+
     public Double balance(String email){
         Wallet wallet = walletRepository.findByEmail(email);
         return wallet.getBalance();
@@ -57,8 +61,14 @@ public class TransactionService {
         responseTransaction.setAmount(servicePayment.getAmount());
         responseTransaction.setServiceCode(servicePayment.getServiceCode());
         responseTransaction.setServiceName(servicePayment.getServiceName());
+        responseTransaction.setInvoiceCode(setRequestId());
         return responseTransaction;
     }
+
+    private String setRequestId() {
+        return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
+    }
+
     public List<Transaction> history(LocalDate dateFrom , LocalDate dateTo){
         return transactionRepository.findAll();
     }
