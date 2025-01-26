@@ -2,8 +2,8 @@ package com.rail.card.ticket.constant;
 
 public class ApplicationEnum {
     public enum Group {
-        ROLE_ADMIN,
-        ROLE_USER
+        Admin,
+        User
     }
 
     public enum Status {

@@ -45,18 +45,10 @@ public class AuthController extends BaseController{
     public ResponseEntity<Object> login(@RequestBody @Valid LoginRequest loginRequest) {
         try {
             LoginResponse loginResponse = authService.login(loginRequest);
-            ResponseCookie cookie = ResponseCookie.from(jwtCookie, loginResponse.getAuthtoken()).path("/v1").maxAge(24 * 60 * 60).httpOnly(true).build();
-            return this.okLogin(cookie);
+            return success(loginResponse);
         } catch (Exception e) {
             return this.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("Success Sign Out");
     }
 
     @PutMapping("/activate/{userId}")

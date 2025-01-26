@@ -1,6 +1,6 @@
 package com.rail.card.ticket.service;
 
-import com.rail.card.ticket.config.GeneratorSequence;
+import com.rail.card.ticket.support.GeneratorSequence;
 import com.rail.card.ticket.model.dto.HistoryDto;
 import com.rail.card.ticket.model.dto.ResponseTransaction;
 import com.rail.card.ticket.model.dto.TransactionDto;
