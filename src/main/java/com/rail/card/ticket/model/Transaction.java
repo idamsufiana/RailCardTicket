@@ -13,9 +13,9 @@ import java.util.Date;
 @Setter
 @Table(name = "transaction")
 public class Transaction extends CrudEntity{
+    private String serviceCode;
     private String transactionType;
     private Double amount;
-    private Date transactionDate;
     @ManyToOne
     private Wallet wallet;
 }

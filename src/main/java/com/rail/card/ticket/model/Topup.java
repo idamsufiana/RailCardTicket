@@ -15,7 +15,6 @@ import java.util.Date;
 public class Topup extends CrudEntity{
     private Double amount;
     private String topupMethod;
-    private Date topupDate;
     @OneToOne
     private Transaction transaction;
 }
