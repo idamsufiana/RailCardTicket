@@ -8,13 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisterRequest {
-    private String UserName;
-    private String password;
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
     private String email;
-    @NotBlank(message = "Phone number is mandatory")
-    @Pattern(regexp = "\\+628\\d{8,12}", message = "Invalid phone number format")
-    private String phone;
-    private String role;
+    private String firstName;
+    private String lastName;
+    private String password;
 }

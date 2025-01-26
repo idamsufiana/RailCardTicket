@@ -33,7 +33,7 @@ public class AuthController extends BaseController{
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterRequest registerRequest) {
         try {
             User registerResponse = authService.register(registerRequest);
-            return this.success(registerResponse);
+            return this.successRegister(registerResponse);
         } catch (Exception var3) {
             Exception exception = var3;
             exception.printStackTrace();
@@ -60,8 +60,8 @@ public class AuthController extends BaseController{
     }
 
     @PutMapping("/activate/{userId}")
-    public ResponseEntity<User> activateUser(@PathVariable String userName) {
-        User user = authService.activateUser(userName);
+    public ResponseEntity<User> activateUser(@PathVariable String email) {
+        User user = authService.activateUser(email);
         return ResponseEntity.ok(user);
     }
 

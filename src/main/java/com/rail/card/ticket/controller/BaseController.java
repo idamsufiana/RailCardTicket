@@ -14,7 +14,9 @@ public class BaseController {
     public ResponseEntity<Object> success(Object data) {
         return new ResponseEntity(new CommonRs(HttpStatus.OK.value(), "success", data), HttpStatus.OK);
     }
-
+    public ResponseEntity<Object> successRegister(Object data) {
+        return new ResponseEntity(new CommonRs(HttpStatus.OK.value(), "Registrasi berhasil silahkan login", data), HttpStatus.OK);
+    }
     public ResponseEntity<Object> success() {
         return new ResponseEntity(new CommonRs(HttpStatus.OK.value(), "success"), HttpStatus.OK);
     }

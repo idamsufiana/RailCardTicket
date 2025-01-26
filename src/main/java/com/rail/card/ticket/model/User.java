@@ -12,10 +12,10 @@ import java.util.Set;
 @Setter
 @Table(name = "user")
 public class User extends CrudEntity{
-    private String userName;
-    private String password;
-    private String phone;
     private String email;
+    private String firstName;
+    private String password;
+    private String lastName;
     private Boolean status= false;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

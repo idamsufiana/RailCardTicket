@@ -68,7 +68,7 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) throws AuthException, ReflectionException {
         User userLogin = new User();
-        User user = userRepository.findFirstByUserName(loginRequest.getUserName());
+        User user = userRepository.findFirstByEmail(loginRequest.getEmail());
         if (!user.getStatus()) {
             throw new IllegalStateException("Account is not activated");
         }
@@ -76,10 +76,10 @@ public class AuthService {
         return loginResponse;
     }
 
-    public User activateUser(String name) {
+    public User activateUser(String email) {
         User user = new User();
-        if (userRepository.findFirstByUserName(name) != null) {
-            user = userRepository.findFirstByUserName(name);
+        if (userRepository.findFirstByEmail(email) != null) {
+            user = userRepository.findFirstByEmail(email);
         } else{
             throw new EntityNotFoundException("User not found");
         }
@@ -95,7 +95,7 @@ public class AuthService {
 
     public Map<String, Object> setPayloadToken(User userModel) {
         Map<String, Object> tokenPayload = new HashMap();
-        tokenPayload.put("userName", userModel.getUserName());
+        tokenPayload.put("email", userModel.getEmail());
         tokenPayload.put("role", userModel.getRoles());
         return tokenPayload;
     }
