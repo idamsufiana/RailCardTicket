@@ -21,22 +21,22 @@ public class TransactionController extends BaseController {
     @Autowired
     TransactionService transactionService;
 
-    @PostMapping
+    @PostMapping("/getbalance")
     public ResponseEntity<?> getbalance(@RequestHeader("Autorization") String authorization) throws TicketException {
         return success(transactionService.balance(getEmail(authorization)));
     }
 
-    @PostMapping
+    @PostMapping("/topUp")
     public ResponseEntity<?> topUp(@RequestHeader("Autorization") String authorization, @RequestBody Double amount) throws TicketException {
         return success(transactionService.topup(getEmail(authorization), amount));
     }
 
-    @PostMapping
+    @PostMapping("/transaction")
     public ResponseEntity<?> transaction(@RequestHeader("Autorization") String authorization, @RequestBody String serviceCode) throws TicketException {
         return success(transactionService.transaction(authorization, serviceCode));
     }
 
-    @GetMapping
+    @GetMapping("/history")
     public ResponseEntity<?> history(@RequestHeader("Autorization") String authorization, @RequestParam(required = false,defaultValue = "0") int page,
                                      @RequestParam(required = false,defaultValue = "100") int limit,
                                      @RequestParam(required = false) String sort,

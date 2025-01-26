@@ -55,8 +55,9 @@ public class TransactionService {
         Wallet wallet = new Wallet();
         try{
             wallet = walletRepository.findByEmail(email);
+            Double result = wallet.getBalance()+amount;
             validateAmount(wallet, amount);
-            wallet.setBalance(wallet.getBalance()+amount);
+            wallet.setBalance(result);
             walletRepository.save(wallet);
             TransactionDto dto = new TransactionDto();
             dto.setAmount(amount);
