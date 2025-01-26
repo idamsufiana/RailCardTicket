@@ -1,8 +1,6 @@
 package com.rail.card.ticket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +11,14 @@ import java.util.Date;
 @Setter
 @Table(name = "transaction")
 public class Transaction extends CrudEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long transactionId;
     private String serviceCode;
     private String transactionType;
     private Double amount;
     @ManyToOne
     private Wallet wallet;
+    @ManyToOne
+    private ServicePayment servicePayment;
 }

@@ -1,7 +1,6 @@
 package com.rail.card.ticket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +9,9 @@ import lombok.Setter;
 @Setter
 @Table(name = "service_payment")
 public class ServicePayment extends CrudEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long serviceId;
     private String serviceCode;
     private String serviceName;
     private Double amount;

@@ -14,9 +14,6 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 public abstract class CrudEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
     protected Date createdDate;
     protected Date updatedDate;
     protected String createdBy;

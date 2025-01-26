@@ -12,6 +12,7 @@ import java.util.Set;
 @Setter
 @Table(name = "user")
 public class User extends CrudEntity{
+    @Id
     private String email;
     private String firstName;
     private String password;
