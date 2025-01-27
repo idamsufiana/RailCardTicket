@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.rail.card.ticket.utils.TokenMapper.expToken;
-import static com.rail.card.ticket.utils.TokenMapper.getEmail;
 
 @Service
 public class TransactionService {
@@ -68,13 +66,12 @@ public class TransactionService {
     }
 
     @Transactional
-    public ResponseTransaction transaction(String Autorization, String serviceCode) throws TicketException {
+    public ResponseTransaction transaction(String email, String serviceCode) throws TicketException {
         ResponseTransaction responseTransaction = new ResponseTransaction();
         try{
-            validate(Autorization, serviceCode);
+            validate(serviceCode);
             // get Amount
             ServicePayment servicePayment = serviceRepository.findFirstByServiceCode(serviceCode);
-            String email = getEmail(Autorization);
             Wallet wallet = walletRepository.findByEmail(email);
             validateAmount(wallet, servicePayment.getAmount());
             wallet.setBalance(wallet.getBalance() - servicePayment.getAmount());
@@ -99,14 +96,12 @@ public class TransactionService {
         return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
     }
 
-    public Page<Transaction> findAllAsDto(String Autorization, HistoryDto date, Pageable pageable) throws TicketException {
-        expToken(Autorization);
+    public Page<Transaction> findAllAsDto(HistoryDto date, Pageable pageable) throws TicketException {
         List<Transaction> list = transactionRepository.findByDateRange(date.getDateFrom(), date.getDateTo());
         return new PageImpl<>(list, pageable, list.size());
     }
 
-    public void validate(String Autorization, String serviceCode) throws TicketException {
-        expToken(Autorization);
+    public void validate(String serviceCode) throws TicketException {
         if(serviceRepository.findFirstByServiceCode(serviceCode) == null){
             throw new TicketException("service Code is not available");
         }
