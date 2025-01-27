@@ -46,7 +46,6 @@ CREATE TABLE service_payments (
     updated_by VARCHAR(255)
 );
 
-
 CREATE TABLE transactions (
     transaction_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     transaction_type VARCHAR(255) NOT NULL,
@@ -60,6 +59,7 @@ CREATE TABLE transactions (
     FOREIGN KEY (wallet_id) REFERENCES wallets(wallet_id) ON DELETE CASCADE,
     FOREIGN KEY (service_payment_id) REFERENCES service_payments(service_id) ON DELETE CASCADE
 );
+
 CREATE TABLE topups (
     topup_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     amount DOUBLE PRECISION NOT NULL,
