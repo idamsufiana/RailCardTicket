@@ -53,11 +53,9 @@ public class AuthService {
         User entity = new User();
         entity.setPassword(bcrypt.hash(registerRequest.getPassword()));
         BeanUtils.copyProperties(registerRequest, entity);
-        Set<Role> roles = new HashSet<>();
         Optional<Role> role = Optional.empty();
         role = roleRepository.findByRole(ApplicationEnum.Group.Admin);
-        roles.add(role.get());
-        entity.setRoles(roles);
+        entity.setRole(role.get());
         return entity;
 
     }
@@ -92,7 +90,7 @@ public class AuthService {
     public Map<String, Object> setPayloadToken(User userModel) {
         Map<String, Object> tokenPayload = new HashMap();
         tokenPayload.put("email", userModel.getEmail());
-        tokenPayload.put("role", userModel.getRoles());
+        tokenPayload.put("role", userModel.getRole());
         return tokenPayload;
     }
 
