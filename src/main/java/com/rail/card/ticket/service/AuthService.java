@@ -75,7 +75,7 @@ public class AuthService {
     public Map<String, Object> setPayloadToken(User userModel) {
         Map<String, Object> tokenPayload = new HashMap();
         tokenPayload.put("email", userModel.getEmail());
-        tokenPayload.put("role", userModel.getRole());
+        tokenPayload.put("role", userModel.getRole().getRoleName().name());
         return tokenPayload;
     }
 
