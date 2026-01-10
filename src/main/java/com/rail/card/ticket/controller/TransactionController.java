@@ -5,6 +5,7 @@ import com.rail.card.ticket.constant.ApplicationEnum;
 import com.rail.card.ticket.model.dto.HistoryDto;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.model.dto.TopUpRequest;
+import com.rail.card.ticket.model.dto.TransactionRequest;
 import com.rail.card.ticket.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +38,9 @@ public class TransactionController extends BaseController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/transaction")
-    public ResponseEntity<?> transaction(@RequestBody String serviceCode) throws TicketException {
+    public ResponseEntity<?> transaction(@RequestBody TransactionRequest serviceCode) throws TicketException {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return success(transactionService.transaction(getEmail(), serviceCode));
+        return success(transactionService.transaction(getEmail(), serviceCode.getService_code()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
