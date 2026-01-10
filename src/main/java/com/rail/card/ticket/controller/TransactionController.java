@@ -8,6 +8,7 @@ import com.rail.card.ticket.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,27 +21,27 @@ public class TransactionController extends BaseController {
     @Autowired
     TransactionService transactionService;
 
-    @Secured({ApplicationEnum.Group.Admin})
-    @PostMapping("/getbalance")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getbalance")
     public ResponseEntity<?> getbalance() throws TicketException {
         return success(transactionService.balance(getEmail()));
     }
 
-    @Secured({ApplicationEnum.Group.Admin})
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/topUp")
     public ResponseEntity<?> topUp(@RequestBody Double amount) throws TicketException {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return success(transactionService.topup(getEmail(), amount));
     }
 
-    @Secured({ApplicationEnum.Group.Admin})
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/transaction")
     public ResponseEntity<?> transaction(@RequestBody String serviceCode) throws TicketException {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return success(transactionService.transaction(getEmail(), serviceCode));
     }
 
-    @Secured({ApplicationEnum.Group.Admin})
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/history")
     public ResponseEntity<?> history(@RequestParam(required = false,defaultValue = "0") int page,
                                      @RequestParam(required = false,defaultValue = "100") int limit,
