@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String body = new String(base64Url.decode(base64EncodedBody));
         Map<String, String> bodyToken = new Gson().fromJson(body, Map.class);
 
-        String email = bodyToken.get("Email");
+        String email = bodyToken.get("email");
         return email;
     }
 }
