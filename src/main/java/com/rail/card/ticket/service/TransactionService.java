@@ -57,6 +57,12 @@ public class TransactionService {
             validateTopUp(wallet, amount);
             wallet.setBalance(result);
             walletRepository.save(wallet);
+            Transaction transaction = new Transaction();
+            transaction.setWallet(wallet);
+            transaction.setAmount(amount);
+            transaction.setTransactionType("TOPUP");
+            transaction.setCreatedDate(new Date());
+            transactionRepository.save(transaction);
             TransactionDto dto = new TransactionDto();
             dto.setAmount(amount);
             dto.setTransactionType("TOPUP");
