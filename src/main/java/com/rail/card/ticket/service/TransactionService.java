@@ -5,7 +5,7 @@ import com.rail.card.ticket.model.dto.HistoryDto;
 import com.rail.card.ticket.model.dto.ResponseTransaction;
 import com.rail.card.ticket.model.dto.TransactionDto;
 import com.rail.card.ticket.exception.TicketException;
-import com.rail.card.ticket.model.ServicePayment;
+import com.rail.card.ticket.model.Service;
 import com.rail.card.ticket.model.Transaction;
 import com.rail.card.ticket.model.Wallet;
 import com.rail.card.ticket.repository.ServiceRepository;
@@ -16,12 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
 
-@Service
+@org.springframework.stereotype.Service
 public class TransactionService {
 
     @Autowired
@@ -69,21 +69,27 @@ public class TransactionService {
     public ResponseTransaction transaction(String email, String serviceCode) throws TicketException {
         ResponseTransaction responseTransaction = new ResponseTransaction();
         try{
-            validate(serviceCode);
-            // get Amount
-            ServicePayment servicePayment = serviceRepository.findFirstByService_ServiceCode(serviceCode);
+            Service service = serviceRepository.findFirstByServiceCode(serviceCode);
+            if(service == null){
+                throw new TicketException("service Code is not available");
+            }
             Wallet wallet = walletRepository.findByEmail(email);
-            Double total = servicePayment.getFeeSnapshot() + servicePayment.getPriceSnapshot() + servicePayment.getTaxSnapshot();
-            validateAmount(wallet, total);
-            wallet.setBalance(wallet.getBalance() - total);
+            if(wallet == null){
+                throw new TicketException("No data found");
+            }
+            if(wallet.getBalance() < service.getServiceTarif()){
+                throw new Exception("Insufficient Fund");
+            }
+            // get Amount
+            wallet.setBalance(wallet.getBalance() - service.getServiceTarif());
             walletRepository.save(wallet);
-            responseTransaction.setAmount(total);
-            responseTransaction.setServiceCode(servicePayment.getService().getServiceCode());
-            responseTransaction.setServiceName(servicePayment.getService().getServiceName());
+            responseTransaction.setAmount(service.getServiceTarif());
+            responseTransaction.setServiceCode(service.getServiceCode());
+            responseTransaction.setServiceName(service.getServiceName());
             responseTransaction.setInvoiceCode(setRequestId());
 
             TransactionDto dto = new TransactionDto();
-            dto.setAmount(total);
+            dto.setAmount(service.getServiceTarif());
             dto.setWallet(wallet);
             dto.setTransactionType("PAYMENT");
             saveToTransaction(dto);
@@ -102,11 +108,6 @@ public class TransactionService {
         return new PageImpl<>(list, pageable, list.size());
     }
 
-    public void validate(String serviceCode) throws TicketException {
-        if(serviceRepository.findFirstByService_ServiceCode(serviceCode) == null){
-            throw new TicketException("service Code is not available");
-        }
-    }
 
     public void validateAmount(Wallet wallet, Double amount) throws TicketException {
         if(wallet== null){
@@ -122,8 +123,6 @@ public class TransactionService {
             throw new TicketException("Data not found");
         }
     }
-
-
 
     public void saveToTransaction(TransactionDto dto) throws TicketException {
       Transaction transaction = new Transaction();
