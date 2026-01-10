@@ -14,7 +14,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/v1/Auth/**").permitAll()
+                        auth.requestMatchers("/v1/Auth/register").permitAll()
+                                .requestMatchers("/v1/Auth/login").permitAll()
+                                .requestMatchers("/v1/Auth/**").hasRole("ADMIN")
+                                .requestMatchers("/v1/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
         return http.build();

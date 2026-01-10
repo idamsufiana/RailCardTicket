@@ -41,7 +41,7 @@ public class AuthController extends BaseController{
         }
     }
 
-    @PostMapping({"login"})
+    @PostMapping({"/login"})
     public ResponseEntity<Object> login(@RequestBody @Valid LoginRequest loginRequest) {
         try {
             LoginResponse loginResponse = authService.login(loginRequest);
