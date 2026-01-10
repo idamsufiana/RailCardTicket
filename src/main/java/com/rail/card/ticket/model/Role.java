@@ -12,8 +12,11 @@ import lombok.Setter;
 public class Role extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long roleId;
+    private Long roleId;
     @Column(name = "role_name")
     private ApplicationEnum.Group roleName;
     private String description;
+
+    @ManyToOne
+    private User user;
 }

@@ -13,9 +13,9 @@ import java.util.Date;
 public class Topup extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long topupId;
-    private Double amount;
+    private Long topupId;
     private String topupMethod;
-    @OneToOne
+
+    @ManyToOne
     private Transaction transaction;
 }

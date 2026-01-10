@@ -12,11 +12,11 @@ import lombok.Setter;
 public class Wallet extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long walletId;
+    private Long walletId;
     private Double balance;
     private ApplicationEnum.Status status;
 
-    @ManyToOne
+    @OneToOne
     private User user;
 
 }

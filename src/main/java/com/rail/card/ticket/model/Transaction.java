@@ -13,11 +13,14 @@ import java.util.Date;
 public class Transaction extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long transactionId;
-    private String transactionType;
+    private Long transactionId;
+    private String status;
     private Double amount;
+    private String referenceNo;
+
+
+    @JoinColumn(name="wallet_id")
     @ManyToOne
     private Wallet wallet;
-    @ManyToOne
-    private ServicePayment servicePayment;
+
 }

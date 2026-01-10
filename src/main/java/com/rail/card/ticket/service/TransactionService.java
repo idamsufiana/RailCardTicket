@@ -62,7 +62,7 @@ public class TransactionService {
         }catch (Exception e){
             throw new TicketException(e.getMessage());
         }
-        return wallet;
+        return null;
     }
 
     @Transactional

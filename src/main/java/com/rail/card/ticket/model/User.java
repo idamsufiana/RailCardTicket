@@ -10,14 +10,19 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+        }
+)
 public class User extends CrudEntity{
     @Id
+    private Long userId;
+
     private String email;
     private String firstName;
     private String password;
     private String lastName;
-    @ManyToOne
-    private Role role;
 
 }

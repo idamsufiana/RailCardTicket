@@ -11,8 +11,16 @@ import lombok.Setter;
 public class ServicePayment extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long serviceId;
-    private String serviceCode;
-    private String serviceName;
-    private Double amount;
+    private Long paymentId;
+    private Double priceSnapshot;
+    private Double feeSnapshot;
+    private Double taxSnapshot;
+
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
+    private Transaction transaction;
+    @ManyToOne
+    @JoinColumn(name="service_id")
+    private Service service;
+
 }
