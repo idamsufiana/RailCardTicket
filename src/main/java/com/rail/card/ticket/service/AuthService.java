@@ -61,9 +61,8 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws AuthException, ReflectionException {
-        User userLogin = new User();
         User user = userRepository.findFirstByEmail(loginRequest.getEmail());
-        LoginResponse loginResponse = userLogin != null ? createToken(userLogin) : null;
+        LoginResponse loginResponse = user != null ? createToken(user) : null;
         return loginResponse;
     }
 
