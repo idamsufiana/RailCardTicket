@@ -83,8 +83,10 @@ public class TransactionService {
 
     /* ===================== HISTORY ===================== */
 
-    public Page<Transaction> findAllAsDto(Pageable pageable) {
-        return transactionRepository.findAll(pageable);
+    public Page<TransactionResponseDto> findAllAsDto(Pageable pageable) {
+        Page<Transaction> page = transactionRepository.findAll(pageable);
+
+        return page.map(TransactionResponseDto::toDto);
     }
 
     /* ===================== PRIVATE HELPERS ===================== */
