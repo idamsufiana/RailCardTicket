@@ -1,9 +1,8 @@
 package com.rail.card.ticket.service;
 
+import com.rail.card.ticket.model.dto.TransactionResponseDto;
 import com.rail.card.ticket.support.GeneratorSequence;
-import com.rail.card.ticket.model.dto.HistoryDto;
 import com.rail.card.ticket.model.dto.ResponseTransaction;
-import com.rail.card.ticket.model.dto.TransactionDto;
 import com.rail.card.ticket.exception.TicketException;
 import com.rail.card.ticket.model.Service;
 import com.rail.card.ticket.model.Transaction;
@@ -14,131 +13,123 @@ import com.rail.card.ticket.repository.WalletRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 
 import java.util.Date;
-import java.util.List;
 
 import static java.time.LocalDate.now;
 
 
 @org.springframework.stereotype.Service
+@Transactional
 public class TransactionService {
 
-    @Autowired
-    TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
+    private final ServiceRepository serviceRepository;
+    private final WalletRepository walletRepository;
+    private final GeneratorSequence generatorSequence;
 
     @Autowired
-    ServiceRepository serviceRepository;
+    public TransactionService(
+            TransactionRepository transactionRepository,
+            ServiceRepository serviceRepository,
+            WalletRepository walletRepository,
+            GeneratorSequence generatorSequence
+    ) {
+        this.transactionRepository = transactionRepository;
+        this.serviceRepository = serviceRepository;
+        this.walletRepository = walletRepository;
+        this.generatorSequence = generatorSequence;
+    }
 
-    @Autowired
-    WalletRepository walletRepository;
-
-    @Autowired
-    GeneratorSequence generatorSequence;
+    /* ===================== BALANCE ===================== */
 
     public Double balance(String email) throws TicketException {
-        Wallet wallet = new Wallet();
-        try{
-            wallet = walletRepository.findByEmail(email);
-        }catch (Exception e){
-            throw new TicketException(e.getMessage());
-        }
+        Wallet wallet = findWalletByEmail(email);
         return wallet.getBalance();
     }
 
-    public Wallet topup(String email, Double amount) throws TicketException {
-        Wallet wallet = new Wallet();
-        try{
-            wallet = walletRepository.findByEmail(email);
-            Double result = wallet.getBalance()+amount;
-            validateTopUp(wallet, amount);
-            wallet.setBalance(result);
-            walletRepository.save(wallet);
-            Transaction transaction = new Transaction();
-            transaction.setWallet(wallet);
-            transaction.setAmount(amount);
-            transaction.setTransactionType("TOPUP");
-            transaction.setCreatedDate(new Date());
-            transactionRepository.save(transaction);
-            TransactionDto dto = new TransactionDto();
-            dto.setAmount(amount);
-            dto.setTransactionType("TOPUP");
-            dto.setWallet(wallet);
-            saveToTransaction(dto);
-        }catch (Exception e){
-            throw new TicketException(e.getMessage());
-        }
-        return null;
+    /* ===================== TOP UP ===================== */
+
+    public TransactionResponseDto topup(String email, Double amount) throws TicketException {
+        validateAmountPositive(amount);
+
+        Wallet wallet = findWalletByEmail(email);
+        wallet.setBalance(wallet.getBalance() + amount);
+        walletRepository.save(wallet);
+
+        return saveTransaction(wallet, amount, "TOPUP");
     }
 
-    @Transactional
+    /* ===================== PAYMENT ===================== */
+
     public ResponseTransaction transaction(String email, String serviceCode) throws TicketException {
-        ResponseTransaction responseTransaction = new ResponseTransaction();
-        try{
-            Service service = serviceRepository.findFirstByServiceCode(serviceCode);
-            if(service == null){
-                throw new TicketException("service Code is not available");
-            }
-            Wallet wallet = walletRepository.findByEmail(email);
-            if(wallet == null){
-                throw new TicketException("No data found");
-            }
-            if(wallet.getBalance() < service.getServiceTarif()){
-                throw new Exception("Insufficient Fund");
-            }
-            // get Amount
-            wallet.setBalance(wallet.getBalance() - service.getServiceTarif());
-            walletRepository.save(wallet);
-            responseTransaction.setAmount(service.getServiceTarif());
-            responseTransaction.setServiceCode(service.getServiceCode());
-            responseTransaction.setServiceName(service.getServiceName());
-            responseTransaction.setInvoiceCode(setRequestId());
-
-            Transaction transaction = new Transaction();
-            transaction.setWallet(wallet);
-            transaction.setAmount(service.getServiceTarif());
-            transaction.setTransactionType("PAYMENT");
-            transaction.setCreatedDate(new Date());
-            transactionRepository.save(transaction);
-            TransactionDto dto = new TransactionDto();
-            dto.setAmount(service.getServiceTarif());
-            dto.setWallet(wallet);
-            dto.setTransactionType("PAYMENT");
-            saveToTransaction(dto);
-        }catch (Exception e){
-            throw new TicketException(e.getMessage());
+        Service service = serviceRepository.findFirstByServiceCode(serviceCode);
+        if (service == null) {
+            throw new TicketException("Service code is not available");
         }
-        return responseTransaction;
+
+        Wallet wallet = findWalletByEmail(email);
+        validateSufficientBalance(wallet, service.getServiceTarif());
+
+        wallet.setBalance(wallet.getBalance() - service.getServiceTarif());
+        walletRepository.save(wallet);
+
+        saveTransaction(wallet, service.getServiceTarif(), "PAYMENT");
+
+        return buildResponse(service);
     }
 
-    private String setRequestId() {
-        return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
-    }
+    /* ===================== HISTORY ===================== */
 
-    public Page<Transaction> findAllAsDto(Pageable pageable) throws TicketException {
+    public Page<Transaction> findAllAsDto(Pageable pageable) {
         return transactionRepository.findAll(pageable);
     }
 
-    public void validateAmount(Wallet wallet, Double amount) throws TicketException {
-        if(wallet== null){
-            throw new TicketException("Data not found");
+    /* ===================== PRIVATE HELPERS ===================== */
+
+    private Wallet findWalletByEmail(String email) throws TicketException {
+        Wallet wallet = walletRepository.findByEmail(email);
+        if (wallet == null) {
+            throw new TicketException("Wallet not found");
         }
-        if(wallet.getBalance() < amount){
+        return wallet;
+    }
+
+    private void validateSufficientBalance(Wallet wallet, Double amount) throws TicketException {
+        if (wallet.getBalance() < amount) {
             throw new TicketException("Insufficient Fund");
         }
     }
 
-    public void validateTopUp(Wallet wallet, Double amount) throws TicketException {
-        if(wallet== null){
-            throw new TicketException("Data not found");
+    private void validateAmountPositive(Double amount) throws TicketException {
+        if (amount == null || amount <= 0) {
+            throw new TicketException("Amount must be greater than zero");
         }
     }
 
-    public void saveToTransaction(TransactionDto dto) throws TicketException {
-      Transaction transaction = new Transaction();
-      transaction.setAmount(dto.getAmount());
+    private TransactionResponseDto saveTransaction(Wallet wallet, Double amount, String type) {
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(amount);
+        transaction.setTransactionType(type);
+        transaction.setCreatedDate(new Date());
+        transactionRepository.save(transaction);
+
+        return TransactionResponseDto.toDto(transaction);
+    }
+
+    private ResponseTransaction buildResponse(Service service) {
+        ResponseTransaction response = new ResponseTransaction();
+        response.setAmount(service.getServiceTarif());
+        response.setServiceCode(service.getServiceCode());
+        response.setServiceName(service.getServiceName());
+        response.setInvoiceCode(generateInvoice());
+        return response;
+    }
+
+    private String generateInvoice() {
+        return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
     }
 }

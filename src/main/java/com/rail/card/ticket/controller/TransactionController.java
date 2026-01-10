@@ -32,7 +32,6 @@ public class TransactionController extends BaseController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/topUp")
     public ResponseEntity<?> topUp(@RequestBody TopUpRequest amount) throws TicketException {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return success(transactionService.topup(getEmail(), amount.getAmount()));
     }
 
