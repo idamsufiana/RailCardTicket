@@ -17,5 +17,5 @@ public class Service {
     @ManyToOne
     @JoinColumn(name="service_icon")
     private Banner banner;
-    private Double servicetarif;
+    private Double serviceTarif;
 }
