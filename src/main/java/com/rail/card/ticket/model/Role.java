@@ -1,5 +1,6 @@
 package com.rail.card.ticket.model;
 
+import com.rail.card.ticket.constant.ApplicationEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ public class Role extends CrudEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long roleId;
-    private String role;
+    @Column(name = "role_name")
+    private ApplicationEnum.Group roleName;
     private String description;
 }

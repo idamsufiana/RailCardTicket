@@ -32,8 +32,8 @@ public class AuthController extends BaseController{
     @PostMapping({"/register"})
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterRequest registerRequest) {
         try {
-            User registerResponse = authService.register(registerRequest);
-            return this.successRegister(registerResponse);
+            authService.register(registerRequest);
+            return this.successRegister(null);
         } catch (Exception var3) {
             Exception exception = var3;
             exception.printStackTrace();
@@ -49,12 +49,6 @@ public class AuthController extends BaseController{
         } catch (Exception e) {
             return this.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    @PutMapping("/activate/{userId}")
-    public ResponseEntity<User> activateUser(@PathVariable String email) {
-        User user = authService.activateUser(email);
-        return ResponseEntity.ok(user);
     }
 
 }

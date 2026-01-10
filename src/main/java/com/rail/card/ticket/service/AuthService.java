@@ -40,8 +40,8 @@ public class AuthService {
     public User register(RegisterRequest registerRequest) throws AuthException, ReflectionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         try {
-            User userModel = this.createUser(registerRequest);
-            return userModel;
+            this.createUser(registerRequest);
+            return null;
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException |
                  DataIntegrityViolationException var5) {
             throw new AuthException("User Already Exsist");
@@ -51,34 +51,20 @@ public class AuthService {
 
     public User createUser(RegisterRequest registerRequest) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         User entity = new User();
-        entity.setPassword(bcrypt.hash(registerRequest.getPassword()));
         BeanUtils.copyProperties(registerRequest, entity);
+        entity.setPassword(bcrypt.hash(registerRequest.getPassword()));
         Optional<Role> role = Optional.empty();
-        role = roleRepository.findByRole(ApplicationEnum.Group.Admin);
+        role = roleRepository.findByRoleName(ApplicationEnum.Group.Admin);
         entity.setRole(role.get());
-        return entity;
+        return userRepository.save(entity);
 
     }
 
     public LoginResponse login(LoginRequest loginRequest) throws AuthException, ReflectionException {
         User userLogin = new User();
         User user = userRepository.findFirstByEmail(loginRequest.getEmail());
-        if (!user.getStatus()) {
-            throw new IllegalStateException("Account is not activated");
-        }
         LoginResponse loginResponse = userLogin != null ? createToken(userLogin) : null;
         return loginResponse;
-    }
-
-    public User activateUser(String email) {
-        User user = new User();
-        if (userRepository.findFirstByEmail(email) != null) {
-            user = userRepository.findFirstByEmail(email);
-        } else{
-            throw new EntityNotFoundException("User not found");
-        }
-        user.setStatus(true);
-        return userRepository.save(user);
     }
 
     public LoginResponse createToken(User user) {
