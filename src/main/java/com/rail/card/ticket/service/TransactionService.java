@@ -51,7 +51,7 @@ public class TransactionService {
         try{
             wallet = walletRepository.findByEmail(email);
             Double result = wallet.getBalance()+amount;
-            validateAmount(wallet, amount);
+            validateTopUp(wallet, amount);
             wallet.setBalance(result);
             walletRepository.save(wallet);
             TransactionDto dto = new TransactionDto();
@@ -116,6 +116,14 @@ public class TransactionService {
             throw new TicketException("Insufficient Fund");
         }
     }
+
+    public void validateTopUp(Wallet wallet, Double amount) throws TicketException {
+        if(wallet== null){
+            throw new TicketException("Data not found");
+        }
+    }
+
+
 
     public void saveToTransaction(TransactionDto dto) throws TicketException {
       Transaction transaction = new Transaction();

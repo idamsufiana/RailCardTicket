@@ -3,6 +3,7 @@ package com.rail.card.ticket.service;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.rail.card.ticket.config.JwtConfig;
 import com.rail.card.ticket.constant.ApplicationEnum;
+import com.rail.card.ticket.model.Wallet;
 import com.rail.card.ticket.model.dto.LoginRequest;
 import com.rail.card.ticket.model.dto.LoginResponse;
 import com.rail.card.ticket.model.dto.RegisterRequest;
@@ -10,6 +11,7 @@ import com.rail.card.ticket.model.Role;
 import com.rail.card.ticket.model.User;
 import com.rail.card.ticket.repository.RoleRepository;
 import com.rail.card.ticket.repository.UserRepository;
+import com.rail.card.ticket.repository.WalletRepository;
 import com.rail.card.ticket.support.BcryptWrapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.security.auth.message.AuthException;
@@ -25,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import static com.rail.card.ticket.constant.ApplicationEnum.Status.ACTIVE;
+
 @Service
 public class AuthService {
 
@@ -36,6 +40,10 @@ public class AuthService {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    WalletRepository walletRepository;
+
 
     public User register(RegisterRequest registerRequest) throws AuthException, ReflectionException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
@@ -56,7 +64,13 @@ public class AuthService {
         Optional<Role> role = Optional.empty();
         role = roleRepository.findByRoleName(ApplicationEnum.Group.Admin);
         entity.setRole(role.get());
-        return userRepository.save(entity);
+        userRepository.save(entity);
+        Wallet wallet = new Wallet();
+        wallet.setUser(entity);
+        wallet.setBalance(0.0);
+        wallet.setStatus(ACTIVE);
+        walletRepository.save(wallet);
+        return null;
 
     }
 
