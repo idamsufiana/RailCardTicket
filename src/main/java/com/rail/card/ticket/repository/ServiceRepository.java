@@ -5,5 +5,5 @@ import com.rail.card.ticket.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ServiceRepository extends JpaRepository<ServicePayment, Long> {
-    ServicePayment findFirstByServiceCode(String serviceCode);
+    ServicePayment findFirstByService_ServiceCode(String serviceCode);
 }

@@ -71,7 +71,7 @@ public class TransactionService {
         try{
             validate(serviceCode);
             // get Amount
-            ServicePayment servicePayment = serviceRepository.findFirstByServiceCode(serviceCode);
+            ServicePayment servicePayment = serviceRepository.findFirstByService_ServiceCode(serviceCode);
             Wallet wallet = walletRepository.findByEmail(email);
             Double total = servicePayment.getFeeSnapshot() + servicePayment.getPriceSnapshot() + servicePayment.getTaxSnapshot();
             validateAmount(wallet, total);
@@ -103,7 +103,7 @@ public class TransactionService {
     }
 
     public void validate(String serviceCode) throws TicketException {
-        if(serviceRepository.findFirstByServiceCode(serviceCode) == null){
+        if(serviceRepository.findFirstByService_ServiceCode(serviceCode) == null){
             throw new TicketException("service Code is not available");
         }
     }
