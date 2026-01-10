@@ -2,8 +2,10 @@ package com.rail.card.ticket.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name ="service")
 public class Service {
 

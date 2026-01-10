@@ -19,6 +19,7 @@ public class ServicePayment extends CrudEntity{
     @ManyToOne
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
+
     @ManyToOne
     @JoinColumn(name="service_id")
     private Service service;

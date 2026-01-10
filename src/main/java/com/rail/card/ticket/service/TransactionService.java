@@ -73,16 +73,17 @@ public class TransactionService {
             // get Amount
             ServicePayment servicePayment = serviceRepository.findFirstByServiceCode(serviceCode);
             Wallet wallet = walletRepository.findByEmail(email);
-            validateAmount(wallet, servicePayment.getAmount());
-            wallet.setBalance(wallet.getBalance() - servicePayment.getAmount());
+            Double total = servicePayment.getFeeSnapshot() + servicePayment.getPriceSnapshot() + servicePayment.getTaxSnapshot();
+            validateAmount(wallet, total);
+            wallet.setBalance(wallet.getBalance() - total);
             walletRepository.save(wallet);
-            responseTransaction.setAmount(servicePayment.getAmount());
-            responseTransaction.setServiceCode(servicePayment.getServiceCode());
-            responseTransaction.setServiceName(servicePayment.getServiceName());
+            responseTransaction.setAmount(total);
+            responseTransaction.setServiceCode(servicePayment.getService().getServiceCode());
+            responseTransaction.setServiceName(servicePayment.getService().getServiceName());
             responseTransaction.setInvoiceCode(setRequestId());
 
             TransactionDto dto = new TransactionDto();
-            dto.setAmount(servicePayment.getAmount());
+            dto.setAmount(total);
             dto.setWallet(wallet);
             dto.setTransactionType("PAYMENT");
             saveToTransaction(dto);
@@ -119,6 +120,5 @@ public class TransactionService {
     public void saveToTransaction(TransactionDto dto) throws TicketException {
       Transaction transaction = new Transaction();
       transaction.setAmount(dto.getAmount());
-      transaction.setTransactionType(dto.getTransactionType());
     }
 }

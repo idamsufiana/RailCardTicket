@@ -17,6 +17,4 @@ public class Role extends CrudEntity{
     private ApplicationEnum.Group roleName;
     private String description;
 
-    @ManyToOne
-    private User user;
 }
