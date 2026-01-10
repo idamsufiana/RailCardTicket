@@ -103,11 +103,9 @@ public class TransactionService {
         return "INV" + String.format("%010d", generatorSequence.get("rail_seq"));
     }
 
-    public Page<Transaction> findAllAsDto(HistoryDto date, Pageable pageable) throws TicketException {
-        List<Transaction> list = transactionRepository.findByDateRange(date.getDateFrom(), date.getDateTo());
-        return new PageImpl<>(list, pageable, list.size());
+    public Page<Transaction> findAllAsDto(Pageable pageable) throws TicketException {
+        return transactionRepository.findAll(pageable);
     }
-
 
     public void validateAmount(Wallet wallet, Double amount) throws TicketException {
         if(wallet== null){

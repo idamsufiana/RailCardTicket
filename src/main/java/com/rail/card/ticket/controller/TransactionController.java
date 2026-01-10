@@ -48,10 +48,9 @@ public class TransactionController extends BaseController {
     public ResponseEntity<?> history(@RequestParam(required = false,defaultValue = "0") int page,
                                      @RequestParam(required = false,defaultValue = "100") int limit,
                                      @RequestParam(required = false) String sort,
-                                     @RequestParam(required = false,defaultValue = "true") boolean asc,
-                                     HistoryDto dto) throws TicketException {
-        Pageable pageable = this.pageFromRequest(page, limit, sort, asc);
-        return success(transactionService.findAllAsDto(dto, pageable));
+                                     @RequestParam(required = false,defaultValue = "true") boolean desc) throws TicketException {
+        Pageable pageable = this.pageFromRequest(page, limit, sort, desc);
+        return success(transactionService.findAllAsDto(pageable));
     }
 
 }
