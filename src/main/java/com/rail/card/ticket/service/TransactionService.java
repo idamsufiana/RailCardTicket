@@ -18,7 +18,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 
+import java.util.Date;
 import java.util.List;
+
+import static java.time.LocalDate.now;
 
 
 @org.springframework.stereotype.Service
@@ -88,6 +91,12 @@ public class TransactionService {
             responseTransaction.setServiceName(service.getServiceName());
             responseTransaction.setInvoiceCode(setRequestId());
 
+            Transaction transaction = new Transaction();
+            transaction.setWallet(wallet);
+            transaction.setAmount(service.getServiceTarif());
+            transaction.setTransactionType("PAYMENT");
+            transaction.setCreatedDate(new Date());
+            transactionRepository.save(transaction);
             TransactionDto dto = new TransactionDto();
             dto.setAmount(service.getServiceTarif());
             dto.setWallet(wallet);

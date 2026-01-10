@@ -16,6 +16,7 @@ public class Transaction extends CrudEntity{
     private Long transactionId;
     private String status;
     private Double amount;
+    private String transactionType;
     private String referenceNo;
 
 
