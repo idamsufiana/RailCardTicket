@@ -16,7 +16,7 @@ Detailed project documentation is available here:
 
 <p align="center">
   <img 
-    src="https://github.com/idamsufiana/RailCardTicket/blob/main/railD.jpg?raw=true" 
+    src="https://github.com/idamsufiana/RailCardTicket/blob/main/?raw=true" 
     alt="RailCardTicket Diagram"
     width="600"
   />
